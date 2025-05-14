@@ -1,0 +1,35 @@
+/* Centering container */
+.register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full viewport height */
+    text-align: center;
+  }
+  
+  /* Form styling */
+  .register-form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Input fields */
+  .register-form input {
+    margin-bottom: 10px;
+  }
+  
+  /* Button */
+  .register-button {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  /* Error message */
+  .error-message {
+    margin-top: 15px;
+    color: red;
+  }
+  
