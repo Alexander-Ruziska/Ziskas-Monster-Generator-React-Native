@@ -2,8 +2,6 @@ const express = require('express');
 const encryptLib = require('../modules/encryption');
 const pool = require('../modules/pool');
 const userStrategy = require('../strategies/user.strategy');
-
-
 const router = express.Router();
 
 // If the request came from an authenticated user, this route
@@ -41,8 +39,6 @@ router.post('/register', (req, res, next) => {
       res.sendStatus(500);
     });
 });
-
-
 
 // Archive a user (mark as archived without deleting)
 router.put("/archive/:id", (req, res) => {

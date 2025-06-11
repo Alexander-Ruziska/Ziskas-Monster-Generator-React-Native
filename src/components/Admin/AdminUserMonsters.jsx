@@ -1,32 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import "./AdminUserMonsters.css"; 
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ScrollView } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import AdminUserMonstersStyles from './AdminUserMonstersStyles';
 
-function AdminUserMonsters() {
-  const { userId } = useParams();
+const AdminUserMonsters = () => {
+  const route = useRoute();
+  const { userId } = route.params;
+
   const [monsters, setMonsters] = useState([]);
-  const [username, setUsername] = useState(""); // Store the username
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     async function fetchUserMonsters() {
       try {
-        const response = await axios.get("/api/monster/admin");
+        const response = await axios.get('/api/monster/admin');
         const userMonsters = response.data.filter(
           (monster) => Number(monster.user_id) === Number(userId)
         );
         setMonsters(userMonsters);
       } catch (error) {
-        console.error("Error fetching user monsters:", error);
+        console.error('Error fetching user monsters:', error);
       }
     }
 
     async function fetchUsername() {
       try {
-        const response = await axios.get(`/api/user/${userId}`); // API call to get the username
+        const response = await axios.get(`/api/user/${userId}`);
         setUsername(response.data.username);
       } catch (error) {
-        console.error("Error fetching username:", error);
+        console.error('Error fetching username:', error);
       }
     }
 
@@ -39,47 +42,38 @@ function AdminUserMonsters() {
       await axios.delete(`/api/monster/delete/${monsterId}`);
       setMonsters((prev) => prev.filter((monster) => monster.id !== monsterId));
     } catch (error) {
-      console.error("Error deleting monster:", error);
+      console.error('Error deleting monster:', error);
     }
   };
 
   return (
-    <div className="monsters-container">
-      <h2 style={{ marginTop: "100px", fontSize: '36px' }}>
-        Monster List
-      </h2>
+    <ScrollView contentContainerStyle={AdminUserMonstersStyles.monstersContainer}>
+      <Text style={AdminUserMonstersStyles.heading}>Monster List</Text>
       {monsters.length === 0 ? (
-        <p>No monsters found for this user.</p>
+        <Text>No monsters found for this user.</Text>
       ) : (
-        <div className="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Created</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {monsters.map((monster) => (
-                <tr key={monster.id}>
-                  <td>{monster.id}</td>
-                  <td>{monster.name}</td>
-                  <td>{monster.type}</td>
-                  <td>{new Date(monster.created).toLocaleDateString()}</td>
-                  <td>
-                    <button className="btn btn-danger mt-4" onClick={() => handleDelete(monster.id)}>Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <View style={AdminUserMonstersStyles.tableWrapper}>
+          {monsters.map((monster) => (
+            <View key={monster.id} style={AdminUserMonstersStyles.tableRow}>
+              <Text style={AdminUserMonstersStyles.cell}>ID: {monster.id}</Text>
+              <Text style={AdminUserMonstersStyles.cell}>Name: {monster.name}</Text>
+              <Text style={AdminUserMonstersStyles.cell}>Type: {monster.type}</Text>
+              <Text style={AdminUserMonstersStyles.cell}>
+                Created: {new Date(monster.created).toLocaleDateString()}
+              </Text>
+              <View style={AdminUserMonstersStyles.buttonWrapper}>
+                <Button
+                  title="Delete"
+                  color="red"
+                  onPress={() => handleDelete(monster.id)}
+                />
+              </View>
+            </View>
+          ))}
+        </View>
       )}
-    </div>
+    </ScrollView>
   );
-}
+};
 
 export default AdminUserMonsters;
